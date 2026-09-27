@@ -156,10 +156,25 @@ export async function updatedLogo(request, response) {
 
 
 export async function removeImageFromCloudinary(request, response) {
-  
-    const imgUrl = request.query.img;
+    try {
+        const imgUrl = request.query.img;
 
-      
+        if (!imgUrl) {
+            return response.status(400).json({
+                message: "Image URL is required",
+                error: true,
+                success: false
+            });
+        }
+
         const deleted = await deleteFileByUrl(imgUrl);
         return response.status(200).json({ success: deleted });
+    } catch (error) {
+        console.error("Image deletion failed:", error);
+        return response.status(502).json({
+            message: "Unable to delete image from ImageKit",
+            error: true,
+            success: false
+        });
+    }
 }

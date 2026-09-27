@@ -34,13 +34,19 @@ export async function uploadFiles(files = [], folder) {
 export async function deleteFileByUrl(url) {
     if (!url) return false;
 
-    const files = await imagekit.listFiles({
-        searchQuery: `url = "${url.replace(/"/g, "\\\"")}"`,
-        limit: 1,
+    const targetUrl = new URL(url);
+    const targetPath = decodeURIComponent(targetUrl.pathname).replace(/\/$/, "");
+    const fileName = targetPath.slice(targetPath.lastIndexOf("/") + 1);
+    const folderPath = targetPath.slice(0, targetPath.lastIndexOf("/") + 1) || "/";
+    const files = await imagekit.listFiles({ path: folderPath, name: fileName, limit: 1000 });
+    const file = files.find((candidate) => {
+        if (!candidate.url) return false;
+        const candidatePath = decodeURIComponent(new URL(candidate.url).pathname).replace(/\/$/, "");
+        return candidatePath === targetPath;
     });
 
-    if (!files[0]?.fileId) return false;
+    if (!file?.fileId) return false;
 
-    await imagekit.deleteFile(files[0].fileId);
+    await imagekit.deleteFile(file.fileId);
     return true;
 }
