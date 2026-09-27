@@ -185,9 +185,9 @@ export const deleteCartItemQtyController = async (request, response) => {
 
 export const emptyCartController = async (request, response) => {
     try {
-        const userId = request.params.id // middlewar
+        const userId = request.userId
 
-        await CartProductModel.deleteMany({userId:userId })
+        await CartProductModel.deleteMany({ userId })
 
           return response.status(200).json({
             error : false,

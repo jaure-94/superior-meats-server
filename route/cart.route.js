@@ -8,5 +8,5 @@ cartRouter.post('/add',auth,addToCartItemController)
 cartRouter.get("/get",auth,getCartItemController)
 cartRouter.put('/update-qty',auth,updateCartItemQtyController)
 cartRouter.delete('/delete-cart-item/:id',auth,deleteCartItemQtyController)
-cartRouter.delete('/emptyCart/:id',auth,emptyCartController)
+cartRouter.delete('/emptyCart',auth,emptyCartController)
 export default cartRouter
